@@ -2,10 +2,7 @@ package comsep_23.Textile_Industry_Production.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +10,10 @@ import java.time.LocalDateTime;
 @Table(name = "customer_orders")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
-public class CustomerOrder {
+@AllArgsConstructor
+public class Materials {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
