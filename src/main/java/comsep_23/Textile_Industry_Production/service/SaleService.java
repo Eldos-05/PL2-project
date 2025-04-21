@@ -1,39 +1,55 @@
 package comsep_23.Textile_Industry_Production.service;
 
-import com.github.javafaker.Faker;
-import comsep_23.Textile_Industry_Production.entity.Materials;
-import jakarta.annotation.PostConstruct;
-import lombok.Getter;
+import comsep_23.Textile_Industry_Production.entity.Material;
+import comsep_23.Textile_Industry_Production.repository.MaterialRepository;
+import comsep_23.Textile_Industry_Production.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import comsep_23.Textile_Industry_Production.entity.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
+
 
 @Service
-@Getter
+@RequiredArgsConstructor
 public class SaleService {
 
-    private List<Materials> materials;
+    private final MaterialRepository materialRepository;
+    private List<Material> materials;
+    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
-    @PostConstruct
-    public void generateMaterials() {
-        Faker faker = new Faker();
-        this.materials = IntStream.rangeClosed(1, 50)
-                .mapToObj(i -> Materials.builder()
-                        .id((long) i)
-                        .materialName(faker.commerce().productName())
-                        .quantity(ThreadLocalRandom.current().nextInt(1, 101))
-                        .orderDate(LocalDateTime.now().minusDays(ThreadLocalRandom.current().nextInt(0, 30)))
-                        .build())
-                .toList();
 
-        System.out.println("Generated 100 fake materials.");
-        materials.forEach(System.out::println);
+    public List<Material> allMaterials() {
+        return materialRepository.findAll();
     }
 
-    public List<Materials> allMaterials() {
-        return materials;
+
+    public Material materialByID(long id) {
+        return materials.stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElse(null);
+
     }
+
+    public List<Material> findByMaterialName(String materialName) {
+        if (materials == null) return Collections.emptyList();
+        return materials.stream()
+                .filter(m -> m.getMaterialName().equalsIgnoreCase(materialName))
+                .collect(Collectors.toList());
+    }
+
+
+    public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+
+    }
+
 }

@@ -7,20 +7,20 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "customer_orders")
+@Table(name = "materials")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Materials {
+public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_login", referencedColumnName = "login")
-    private User customer;
+    @JoinColumn(name = "user_login", referencedColumnName = "login")
+    private User user;
     @Column(nullable = false)
     private String materialName;
     @Column(nullable = false)
